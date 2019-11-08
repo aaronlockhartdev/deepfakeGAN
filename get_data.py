@@ -21,14 +21,11 @@ def get_data():
         ' (', progressbar.AdaptiveETA(), ') ',
     ]
 
-    counter = 0
+    with progressbar.progressbar(max_value=len(files), widgets=widgets) as bar:
 
-    for i in progressbar.progressbar(range(len(files)), widgets=widgets):
-
-        face_extract(DATA_INPUT_PATH + '/' + files[counter], dataList)
-
-    counter += 1
-
+        for i in range(len(files)):
+            face_extract(DATA_INPUT_PATH + '/' + files[i], dataList)
+            bar.update(i)
 
     np.save(DATA_OUTPUT_PATH + 'images.npy', np.asarray(dataList))
 
