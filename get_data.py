@@ -14,7 +14,7 @@ def get_data():
     files = os.listdir(DATA_INPUT_PATH)
 
     map = np.memmap('data.map', dtype=np.float32,
-                    mode='w+', shape=(2**64, IMAGE_WIDTH, IMAGE_HEIGHT, 3))
+                    mode='w+', shape=(100000000, IMAGE_WIDTH, IMAGE_HEIGHT, 3))
 
     bar = IncrementalBar('Extracting', max=len(files))
 
@@ -54,5 +54,21 @@ def get_data():
     np.save(DATA_OUTPUT_PATH + 'images.npy', np.asarray(dataList))
 
 
+def split_data():
+
+    files = os.listdir(DATA_INPUT_PATH)
+
+    bar = IncrementalBar('Extracting', max=len(files))
+
+    counter = 0
+
+    for i in range(len(files)):
+        video = cv2.VideoCapture(DATA_INPUT_PATH + '/' + files[i])
+        success = 1
+        while success:
+            success, img = video.read()
+            np.save(DATA_OUTPUT_PATH + '/split/' + str(counter) + '.npy')
+            counter += 1
+
 if __name__ == '__main__':
-     get_data()
+     split_data()

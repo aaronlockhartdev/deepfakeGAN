@@ -3,7 +3,7 @@ IMAGE_WIDTH = 200
 IMAGE_HEIGHT = 200
 
 # file paths
-DATA_OUTPUT_PATH = "formatted_data"
+DATA_OUTPUT_PATH = "/share/output_faceforensics"
 DATA_INPUT_PATH = "/share/faceforensics/original_sequences/youtube/raw/videos"
 
 # training
