@@ -21,7 +21,7 @@ def get_data():
         ' (', AdaptiveETA(), ') ',
     ]
 
-    with progressbar(max_value=len(files), widgets=widgets) as bar:
+    with progressbar.progressbar(max_value=len(files), widgets=widgets) as bar:
 
         for i in range(len(files)):
             face_extract(DATA_INPUT_PATH + '/' + files[i], dataList)
