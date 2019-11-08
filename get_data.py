@@ -1,21 +1,44 @@
 import cv2
+import os
 import numpy as np
 from constants import *
 
+def load_data():
+
+    return np.load(DATA_OUTPUT_PATH + 'images.npy')
+
+
 def get_data():
 
+    files = os.listdir(DATA_INPUT_PATH)
+
+    dataList = []
+
+    for f in files:
+        face_extract(DATA_INPUT_PATH + '/' + f)
+
+    np.save(DATA_OUTPUT_PATH + 'images.npy', np.asarray(dataList))
 
 
-def face_extract(imgPath):
+
+def face_extract(vidPath):
+
+    global list
 
     faceCascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
-    img = cv2.imread(imgPath)
+    video = cv2.videoCapture(vidPath)
 
-    faces = face_cascade.detectMultiScale(1.1, 4)
+    count = 0
+    success = 1
 
-    (x, y, w, h) = faces[0]
-    img = img[y:y+h, x:x+w]
-    print(str(w) + ',' + str(h))
-    img = cv2.resize(image, (IMAGE_WIDTH, IMAGE_HEIGHT))
+    while success:
+        success, img = video.read()
 
-    return img
+        faces = face_cascade.detectMultiScale(1.1, 4)
+
+        (x, y, w, h) = faces[0]
+        img = img[y:y+h, x:x+w]
+
+        img = cv2.resize(image, (IMAGE_WIDTH, IMAGE_HEIGHT))
+
+        dataList.append(np.copy(img))

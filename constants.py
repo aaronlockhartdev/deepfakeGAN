@@ -6,5 +6,7 @@ IMAGE_HEIGHT = 200
 DATA_OUTPUT_PATH = "formatted_data"
 DATA_INPUT_PATH = "raw_data"
 
-# model
+# training
 BATCH_SIZE = 128
+EPOCHS = 1000
+CHECKPOINT_DIR = "checkpoints"
