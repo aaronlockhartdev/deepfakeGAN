@@ -15,11 +15,11 @@ def get_data():
 
     dataList = []
 
-    widgets = [
-        '[', progressbar.Timer(), ']',
-        progressbar.Bar(),
-        '(', progressbar.AdaptiveETA(),')',
-    ]
+widgets=[
+    ' [', progressbar.Timer(), '] ',
+    progressbar.Bar(),
+    ' (', progressbar.AdaptiveETA(), ') ',
+]
 
     counter = 0
 
