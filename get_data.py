@@ -2,7 +2,7 @@ import cv2
 import os
 import numpy as np
 from constants import *
-from progressbar import progressbar, Timer, Bar, AdaptiveETA
+from progress.bar import IncrementalBar
 
 def load_data():
 
@@ -15,15 +15,11 @@ def get_data():
 
     dataList = []
 
-    widgets=[
-        ' [', Timer(), '] ',
-        Bar(),
-        ' (', AdaptiveETA(), ') ',
-    ]
 
-    for i in progressbar(range(len(files)), widgets=widgets):
+    bar = IncrementalBar('Extracting', max=len(files))
+    for i in range(len(files)):
         face_extract(DATA_INPUT_PATH + '/' + files[i], dataList)
-        bar.update(i)
+        bar.next()
 
     np.save(DATA_OUTPUT_PATH + 'images.npy', np.asarray(dataList))
 
