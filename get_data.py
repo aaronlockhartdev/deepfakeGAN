@@ -58,7 +58,7 @@ def split_data():
 
     files = os.listdir(DATA_INPUT_PATH)
 
-    bar = IncrementalBar('Extracting', max=len(files))
+    bar = IncrementalBar('Splitting', max=len(files))
 
     counter = 0
 
@@ -69,6 +69,8 @@ def split_data():
             success, img = video.read()
             np.save(DATA_OUTPUT_PATH + '/split/' + str(counter) + '.npy', img)
             counter += 1
+
+        bar.next()
 
 if __name__ == '__main__':
      split_data()
