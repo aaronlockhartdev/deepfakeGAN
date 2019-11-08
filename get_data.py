@@ -15,17 +15,15 @@ def get_data():
 
     dataList = []
 
-    counter = 0
-
     widgets = [
         '[', progressbar.Timer(), ']',
         progressbar.Bar(),
         '(', progressbar.AdaptiveETA(),')',
     ]
 
-    for f in progressbar.progressbar(files):
+    for i in progressbar.progressbar(range(len(files))):
 
-        face_extract(DATA_INPUT_PATH + '/' + f, dataList)
+        face_extract(DATA_INPUT_PATH + '/' + files[i], dataList)
 
 
     np.save(DATA_OUTPUT_PATH + 'images.npy', np.asarray(dataList))
