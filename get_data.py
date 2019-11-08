@@ -42,4 +42,4 @@ def mask_data():
         bar.next()
 
 if __name__ == '__main__':
-     split_data()
+     mask_data()
