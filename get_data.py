@@ -2,7 +2,7 @@ import cv2
 import os
 import numpy as np
 from constants import *
-from progressbar import ProgressBar, Timer, Bar, AdaptiveETA
+from progressbar import progressbar, Timer, Bar, AdaptiveETA
 
 def load_data():
 
@@ -21,7 +21,7 @@ def get_data():
         ' (', AdaptiveETA(), ') ',
     ]
 
-    for i in ProgressBar(range(len(files)), widgets=widgets):
+    for i in progressbar(range(len(files)), widgets=widgets):
         face_extract(DATA_INPUT_PATH + '/' + files[i], dataList)
         bar.update(i)
 
