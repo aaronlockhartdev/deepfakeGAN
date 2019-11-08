@@ -14,7 +14,7 @@ def get_data():
     files = os.listdir(DATA_INPUT_PATH)
 
     map = np.memmap('data.map', dtype=np.float32,
-                    mode='w+', shape=(200000, IMAGE_WIDTH, IMAGE_HEIGHT, 3))
+                    mode='w+', shape=(62034739, IMAGE_WIDTH, IMAGE_HEIGHT, 3))
 
     bar = IncrementalBar('Extracting', max=len(files))
 
