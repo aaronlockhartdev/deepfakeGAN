@@ -4,7 +4,7 @@ IMAGE_HEIGHT = 200
 
 # file paths
 DATA_OUTPUT_PATH = "formatted_data"
-DATA_INPUT_PATH = "raw_data"
+DATA_INPUT_PATH = "/share/faceforensics/original_sequences/youtube/raw/videos"
 
 # training
 BATCH_SIZE = 128

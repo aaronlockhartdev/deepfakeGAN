@@ -15,18 +15,18 @@ def get_data():
     dataList = []
 
     for f in files:
-        face_extract(DATA_INPUT_PATH + '/' + f)
+        face_extract(DATA_INPUT_PATH + '/' + f, dataList)
 
     np.save(DATA_OUTPUT_PATH + 'images.npy', np.asarray(dataList))
 
 
 
-def face_extract(vidPath):
+def face_extract(vidPath, dataList):
 
-    global list
+    print("Extracting " + vidPath + "...")
 
     faceCascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
-    video = cv2.videoCapture(vidPath)
+    video = cv2.VideoCapture(vidPath)
 
     count = 0
     success = 1
@@ -34,11 +34,17 @@ def face_extract(vidPath):
     while success:
         success, img = video.read()
 
-        faces = face_cascade.detectMultiScale(1.1, 4)
+#	grey = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        faces = faceCascade.detectMultiScale(img, 1.1, 4)
 
+        if len(faces) == 0:
+            continue
         (x, y, w, h) = faces[0]
         img = img[y:y+h, x:x+w]
 
-        img = cv2.resize(image, (IMAGE_WIDTH, IMAGE_HEIGHT))
+        img = cv2.resize(img, (IMAGE_WIDTH, IMAGE_HEIGHT))
 
         dataList.append(np.copy(img))
+
+if __name__ == '__main__':
+     get_data()
