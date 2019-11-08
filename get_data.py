@@ -3,6 +3,7 @@ import os
 import numpy as np
 from constants import *
 import progressbar
+from progressbar import progressbar
 
 def load_data():
 
