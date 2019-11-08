@@ -2,6 +2,7 @@ import cv2
 import os
 import numpy as np
 from constants import *
+import progressbar
 
 def load_data():
 
@@ -14,16 +15,24 @@ def get_data():
 
     dataList = []
 
-    for f in files:
+    counter = 0
+
+    widgets = [
+        '[', progressbar.Timer(), ']',
+        progressbar.Bar(),
+        '(', progressbar.AdaptiveETA(),')',
+    ]
+
+    for f in progressbar.progressbar(files):
+
         face_extract(DATA_INPUT_PATH + '/' + f, dataList)
+
 
     np.save(DATA_OUTPUT_PATH + 'images.npy', np.asarray(dataList))
 
 
 
 def face_extract(vidPath, dataList):
-
-    print("Extracting " + vidPath + "...")
 
     faceCascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
     video = cv2.VideoCapture(vidPath)
@@ -34,11 +43,11 @@ def face_extract(vidPath, dataList):
     while success:
         success, img = video.read()
 
-#	grey = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         faces = faceCascade.detectMultiScale(img, 1.1, 4)
 
         if len(faces) == 0:
             continue
+
         (x, y, w, h) = faces[0]
         img = img[y:y+h, x:x+w]
 
