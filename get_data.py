@@ -67,7 +67,7 @@ def split_data():
         success = 1
         while success:
             success, img = video.read()
-            np.save(DATA_OUTPUT_PATH + '/split/' + str(counter) + '.npy')
+            np.save(DATA_OUTPUT_PATH + '/split/' + str(counter) + '.npy', img)
             counter += 1
 
 if __name__ == '__main__':
