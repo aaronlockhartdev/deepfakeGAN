@@ -14,7 +14,7 @@ def mask_data():
 
     files = os.listdir(DATA_INPUT_PATH)
 
-    bar = IncrementalBar('Splitting', max=len(files))
+    bar = IncrementalBar('Masking', max=len(files))
 
     counter = 0
 
