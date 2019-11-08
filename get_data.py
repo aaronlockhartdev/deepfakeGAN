@@ -1,35 +1,28 @@
 import cv2
 import os
+import dask
 import numpy as np
 from constants import *
 from progress.bar import IncrementalBar
 
 def load_data():
 
-    return np.load(DATA_OUTPUT_PATH + 'images.npy')
+    return dask.from_npy_stack(DATA_OUTPUT_PATH + '/split')
 
 
-def get_data():
+def mask_data():
 
     files = os.listdir(DATA_INPUT_PATH)
 
-    map = np.memmap('data.map', dtype=np.float32,
-                    mode='w+', shape=(100000000, IMAGE_WIDTH, IMAGE_HEIGHT, 3))
+    bar = IncrementalBar('Splitting', max=len(files))
 
-    bar = IncrementalBar('Extracting', max=len(files))
+    counter = 0
 
-    count = 0
+    faceCascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
 
-    def face_extract(vidPath, map):
-
-        global count
-
-        faceCascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
-        video = cv2.VideoCapture(vidPath)
-
-        count = 0
+    for i in range(len(files)):
+        video = cv2.VideoCapture(DATA_INPUT_PATH + '/' + files[i])
         success = 1
-
         while success:
             success, img = video.read()
 
@@ -43,30 +36,6 @@ def get_data():
 
             img = cv2.resize(img, (IMAGE_WIDTH, IMAGE_HEIGHT))
 
-            map[count] = img
-
-            count += 1
-
-    for i in range(len(files)):
-        face_extract(DATA_INPUT_PATH + '/' + files[i], map)
-        bar.next()
-
-    np.save(DATA_OUTPUT_PATH + 'images.npy', np.asarray(dataList))
-
-
-def split_data():
-
-    files = os.listdir(DATA_INPUT_PATH)
-
-    bar = IncrementalBar('Splitting', max=len(files))
-
-    counter = 0
-
-    for i in range(len(files)):
-        video = cv2.VideoCapture(DATA_INPUT_PATH + '/' + files[i])
-        success = 1
-        while success:
-            success, img = video.read()
             np.save(DATA_OUTPUT_PATH + '/split/' + str(counter) + '.npy', img)
             counter += 1
 
