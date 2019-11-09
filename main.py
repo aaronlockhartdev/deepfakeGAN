@@ -1,8 +1,6 @@
-# from get_data import get_data
-from model import create_generator, create_descriminator
-
+from train import train
 def main():
-    create_descriminator()
+    train()
 
 if __name__ == '__main__':
     main()

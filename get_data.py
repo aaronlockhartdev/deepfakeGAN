@@ -1,13 +1,18 @@
 import cv2
 import os
-import dask
 import numpy as np
 from constants import *
 from progress.bar import IncrementalBar
 
 def load_data():
+    files = os.listdir(DATA_OUTPUT_PATH + '/split')
+    map = np.memmap("data.map", dtype=np.float32, mode='w+', shape=(len(files), IMAGE_WIDTH, IMAGE_HEIGHT, 3))
+    bar = IncrementalBar('Loading', max=len(files))
 
-    return dask.from_npy_stack(DATA_OUTPUT_PATH + '/split')
+    for i, f in enumerate(files):
+        map[i] = np.load(DATA_OUTPUT_PATH + '/split/' + f)
+        bar.next()
+    return map
 
 
 def mask_data():

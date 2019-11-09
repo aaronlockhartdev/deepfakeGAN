@@ -56,15 +56,15 @@ def create_generator():
 
     merged = layers.Dense(800, activation='sigmoid')(merged)
 
-    merged = layers.Dense(600, activation='sigmoid')(merged)
+    merged = layers.Dense(700, activation='sigmoid')(merged)
 
-    merged = layers.Dense(400, activation='sigmoid')(merged)
+    merged = layers.Dense(625, activation='sigmoid')(merged)
 
-    merged = layers.Reshape((20, 20, 1))(merged)
+    merged = layers.Reshape((25, 25, 1))(merged)
 
     merged = layers.Conv2DTranspose(64, (5, 5), strides=(2, 2), padding='same', use_bias=True)(merged)
 
-    merged = layers.Conv2DTranspose(256, (5, 5), strides=(3, 3), padding='same', use_bias=True)(merged)
+    merged = layers.Conv2DTranspose(256, (5, 5), strides=(2, 2), padding='same', use_bias=True)(merged)
 
     merged = layers.Conv2DTranspose(128, (5, 5), strides=(2, 2), padding='same', use_bias=True)(merged)
 
@@ -96,6 +96,8 @@ def create_discriminator():
 
     discriminator = layers.Dense(1)(discriminator)
 
-    model = tf.keras.Model(inputs=[input], outputs=discriminator)
+    model = tf.keras.Model(inputs=input, outputs=discriminator)
 
     print(model.summary())
+
+    return model
