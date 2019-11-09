@@ -113,3 +113,4 @@ faceforensics_download_v4.py
 haarcascade_frontalface_default.xml
 formatted_data/*
 raw_data/*
+data.map
