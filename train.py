@@ -2,13 +2,15 @@ import tensorflow as tf
 import numpy as np
 from time import time
 from model import create_generator, create_discriminator
-from get_data import load_data
+from get_data import load_batches
 from constants import *
 from progress.bar import IncrementalBar
+import dask.array as da
 
 
 
 def train():
+    tf.keras.backend.set_floatx('float16')
     gpu = tf.config.experimental.list_physical_devices('GPU')[0]
     tf.config.experimental.set_memory_growth(gpu, True)
     generator = create_generator()
@@ -36,21 +38,9 @@ def train():
                                      generator=generator,
                                      discriminator=discriminator)
 
-    data = load_data()
+    batches = load_batches()
 
     print("\nData Loaded")
-
-    np.random.shuffle(data)
-
-    print("\nData Shuffled")
-
-    print(data.shape[0])
-    data = data[:data.shape[0] - (data.shape[0] % BATCH_SIZE)]
-    print(data.shape[0])
-    numSplits = int(data.shape[0] / BATCH_SIZE)
-    print(numSplits)
-
-    splitData = tf.split(data, num_or_size_splits=numSplits, axis=0)
 
 
     @tf.function
@@ -74,13 +64,16 @@ def train():
         return genLoss, discLoss
 
     for epoch in range(EPOCHS):
+        randomized = np.arange(batches.shape[0])
+        np.random.shuffle(randomized)
+
         start = time()
-        bar = IncrementalBar("Training epoch " + str(epoch), max=numSplits)
+        bar = IncrementalBar("Training epoch " + str(epoch), max=numBatches)
         genLossSum = 0
         discLossSum = 0
         lossCount = 0
-        for batch in splitData:
-            genLoss, discLoss = train_batch(batch)
+        for i in range(batches.shape[0]):
+            genLoss, discLoss = train_batch(batches[randomized[i]])
             genLossSum += genLoss
             discLossSum += discLoss
             lossCount += 1

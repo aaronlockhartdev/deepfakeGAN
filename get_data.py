@@ -4,16 +4,48 @@ import numpy as np
 from constants import *
 from progress.bar import IncrementalBar
 
+def load_batches():
+    map = np.memmap(DATA_OUTPUT_PATH + "/batches.map", dtype=np.float16, mode='r+', shape=(len(files), IMAGE_WIDTH, IMAGE_HEIGHT, 3))
+    return map
+
 def load_data():
     files = os.listdir(DATA_OUTPUT_PATH + '/split')
-    map = np.memmap("data.map", dtype=np.float32, mode='w+', shape=(len(files), IMAGE_WIDTH, IMAGE_HEIGHT, 3))
+    map = np.memmap(DATA_OUTPUT_PATH + "/data_copy.map", dtype=np.float16, mode='r+', shape=(len(files), IMAGE_WIDTH, IMAGE_HEIGHT, 3))
+    return map
+
+def map_data():
+    files = os.listdir(DATA_OUTPUT_PATH + '/split')
+    map = np.memmap(DATA_OUTPUT_PATH + "/data.map", dtype=np.float16, mode='w+', shape=(len(files), IMAGE_WIDTH, IMAGE_HEIGHT, 3))
     bar = IncrementalBar('Loading', max=len(files))
 
     for i, f in enumerate(files):
         map[i] = np.load(DATA_OUTPUT_PATH + '/split/' + f)
         bar.next()
-    return map
+    del map
 
+def batch_data():
+    map = load_data()
+
+    numBatches = int(data.shape[0] / BATCH_SIZE)
+
+    batches = np.memmap(DATA_OUTPUT_PATH + "/batches.map", dtype=np.float16, mode='r+', shape=(numBatches, BATCH_SIZE, IMAGE_WIDTH, IMAGE_HEIGHT, 3))
+    randomized = np.arange(numBatches * BATCH_SIZE)
+    np.random.shuffle(randomized)
+
+
+    bar = IncrementalBar("Batching with batch size " + str(BATCH_SIZE), max=randomized.shape[0])
+
+    batchCount = 0
+    sampleCount = 0
+    for val in randomized:
+        batches[batchCount][sampleCount] = data[val]
+        sampleCount += 1
+        if sampleCount == BATCH_SIZE:
+            sampleCount = 0
+            batchCount += 1
+        bar.next()
+
+    del batches
 
 def mask_data():
 
