@@ -17,16 +17,16 @@ def create_generator():
     source = layers.BatchNormalization()(source)
     source = layers.MaxPooling2D(pool_size=(2, 2), strides=None, padding='SAME')(source)
 
-    source = layers.Conv2D(128, (2, 2), strides=(1, 1), padding='SAME', use_bias=True)(source)
+    source = layers.Conv2D(512, (2, 2), strides=(1, 1), padding='SAME', use_bias=True)(source)
     source = layers.LeakyReLU()(source)
     source = layers.BatchNormalization()(source)
     source = layers.MaxPooling2D(pool_size=(2, 2), strides=None, padding='SAME')(source)
 
     source = layers.Flatten()(source)
 
-    source = layers.Dense(800, activation='sigmoid')(source)
+    source = layers.Dense(1200, activation='sigmoid')(source)
 
-    source = layers.Dense(600, activation='sigmoid')(source)
+    source = layers.Dense(800, activation='sigmoid')(source)
 
     target_input = layers.Input(shape=(IMAGE_WIDTH, IMAGE_HEIGHT, 3))
     target = layers.BatchNormalization()(target_input)
@@ -41,28 +41,28 @@ def create_generator():
     target = layers.BatchNormalization()(target)
     target = layers.MaxPooling2D(pool_size=(2, 2), strides=None, padding='SAME')(target)
 
-    target = layers.Conv2D(128, (7, 7), strides=(1, 1), padding='SAME', use_bias=True)(target)
+    target = layers.Conv2D(512, (7, 7), strides=(1, 1), padding='SAME', use_bias=True)(target)
     target = layers.LeakyReLU()(target)
     target = layers.BatchNormalization()(target)
     target = layers.MaxPooling2D(pool_size=(2, 2), strides=None, padding='SAME')(target)
 
     target = layers.Flatten()(target)
 
-    target = layers.Dense(800, activation='sigmoid')(target)
+    target = layers.Dense(1200, activation='sigmoid')(target)
 
-    target = layers.Dense(600, activation='sigmoid')(target)
+    target = layers.Dense(800, activation='sigmoid')(target)
 
     merged = layers.concatenate([source, target])
 
-    merged = layers.Dense(800, activation='sigmoid')(merged)
+    merged = layers.Dense(1200, activation='sigmoid')(merged)
 
-    merged = layers.Dense(700, activation='sigmoid')(merged)
+    merged = layers.Dense(800, activation='sigmoid')(merged)
 
     merged = layers.Dense(625, activation='sigmoid')(merged)
 
     merged = layers.Reshape((25, 25, 1))(merged)
 
-    merged = layers.Conv2DTranspose(64, (5, 5), strides=(2, 2), padding='same', use_bias=True)(merged)
+    merged = layers.Conv2DTranspose(512, (5, 5), strides=(2, 2), padding='same', use_bias=True)(merged)
 
     merged = layers.Conv2DTranspose(256, (5, 5), strides=(2, 2), padding='same', use_bias=True)(merged)
 
