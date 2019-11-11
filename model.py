@@ -7,7 +7,7 @@ def create_generator():
     source_input = layers.Input(shape=(IMAGE_WIDTH, IMAGE_HEIGHT, 3))
     source = layers.BatchNormalization()(source_input)
 
-    source = layers.Conv2D(64, (5, 5), strides=(1, 1), padding='SAME', use_bias=True)(source)
+    source = layers.Conv2D(128, (5, 5), strides=(1, 1), padding='SAME', use_bias=True)(source)
     source = layers.LeakyReLU()(source)
     source = layers.BatchNormalization()(source)
     source = layers.MaxPooling2D(pool_size=(2, 2), strides=None, padding='SAME')(source)
@@ -31,7 +31,7 @@ def create_generator():
     target_input = layers.Input(shape=(IMAGE_WIDTH, IMAGE_HEIGHT, 3))
     target = layers.BatchNormalization()(target_input)
 
-    target = layers.Conv2D(64, (11, 11), strides=(1, 1), padding='SAME', use_bias=True)(target)
+    target = layers.Conv2D(128, (11, 11), strides=(1, 1), padding='SAME', use_bias=True)(target)
     target = layers.LeakyReLU()(target)
     target = layers.BatchNormalization()(target)
     target = layers.MaxPooling2D(pool_size=(2, 2), strides=None, padding='SAME')(target)
@@ -62,7 +62,11 @@ def create_generator():
 
     merged = layers.Reshape((25, 25, 1))(merged)
 
+<<<<<<< HEAD
     merged = layers.Conv2DTranspose(512, (5, 5), strides=(2, 2), padding='same', use_bias=True)(merged)
+=======
+    merged = layers.Conv2DTranspose(128, (5, 5), strides=(2, 2), padding='same', use_bias=True)(merged)
+>>>>>>> 5f668f8b6e14624201e07cdb7f0ab307df6e2f4d
 
     merged = layers.Conv2DTranspose(256, (5, 5), strides=(2, 2), padding='same', use_bias=True)(merged)
 
@@ -80,17 +84,19 @@ def create_discriminator():
 
     input = layers.Input(shape=(IMAGE_WIDTH, IMAGE_HEIGHT, 3))
 
-    discriminator = layers.Conv2D(64, (5, 5), strides=(2, 2), padding='same')(input)
+    discriminator = layers.BatchNormalization()(input)
+
+    discriminator = layers.Conv2D(64, (7, 7), strides=(2, 2), padding='same')(discriminator)
 
     discriminator = layers.LeakyReLU()(discriminator)
 
-    discriminator = layers.Dropout(0.3)(discriminator)
+    discriminator = layers.Dropout(0.4)(discriminator)
 
-    discriminator = layers.Conv2D(64, (5, 5), strides=(2, 2), padding='same')(discriminator)
+    discriminator = layers.Conv2D(64, (7, 7), strides=(2, 2), padding='same')(discriminator)
 
     discriminator = layers.LeakyReLU()(discriminator)
 
-    discriminator = layers.Dropout(0.3)(discriminator)
+    discriminator = layers.Dropout(0.4)(discriminator)
 
     discriminator = layers.Flatten()(discriminator)
 
