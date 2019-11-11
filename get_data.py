@@ -5,7 +5,13 @@ from constants import *
 from progress.bar import IncrementalBar
 
 def load_batches():
-    map = np.memmap(DATA_OUTPUT_PATH + "/batches.map", dtype=np.float16, mode='r+', shape=(len(files), IMAGE_WIDTH, IMAGE_HEIGHT, 3))
+    files = os.listdir(DATA_OUTPUT_PATH + '/split')
+    numBatches = int(len(files)/BATCH_SIZE)
+    try:
+        map = np.memmap(DATA_OUTPUT_PATH + "/batches.map", dtype=np.float16, mode='r+', shape=(numBatches, BATCH_SIZE, IMAGE_WIDTH, IMAGE_HEIGHT, 3))
+    except FileNotFoundError:
+        batch_data()
+        map = np.memmap(DATA_OUTPUT_PATH + "/batches.map", dtype=np.float16, mode='r+', shape=(numBatches, BATCH_SIZE, IMAGE_WIDTH, IMAGE_HEIGHT, 3))
     return map
 
 def load_data():
@@ -24,11 +30,11 @@ def map_data():
     del map
 
 def batch_data():
-    map = load_data()
+    data = load_data()
 
-    numBatches = int(data.shape[0] / BATCH_SIZE)
+    numBatches = int(data.shape[0]/BATCH_SIZE)
 
-    batches = np.memmap(DATA_OUTPUT_PATH + "/batches.map", dtype=np.float16, mode='r+', shape=(numBatches, BATCH_SIZE, IMAGE_WIDTH, IMAGE_HEIGHT, 3))
+    batches = np.memmap(DATA_OUTPUT_PATH + "/batches.map", dtype=np.float16, mode='w+', shape=(numBatches, BATCH_SIZE, IMAGE_WIDTH, IMAGE_HEIGHT, 3))
     randomized = np.arange(numBatches * BATCH_SIZE)
     np.random.shuffle(randomized)
 

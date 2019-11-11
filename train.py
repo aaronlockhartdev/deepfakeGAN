@@ -10,6 +10,7 @@ import dask.array as da
 
 
 def train():
+    tf.executing_eagerly()
     tf.keras.backend.set_floatx('float16')
     gpu = tf.config.experimental.list_physical_devices('GPU')[0]
     tf.config.experimental.set_memory_growth(gpu, True)
@@ -40,6 +41,8 @@ def train():
 
     batches = load_batches()
 
+    print(batches[0].shape)
+
     print("\nData Loaded")
 
 
@@ -60,24 +63,31 @@ def train():
 
         generatorOptimizer.apply_gradients(zip(generatorGradients, generator.trainable_variables))
         discriminatorOptimizer.apply_gradients(zip(discriminatorGradients, discriminator.trainable_variables))
-
         return genLoss, discLoss
 
-    for epoch in range(EPOCHS):
-        randomized = np.arange(batches.shape[0])
-        np.random.shuffle(randomized)
+    def train_dataset(batches):
+        for epoch in range(EPOCHS):
+            randomized = np.arange(batches.shape[0])
+            np.random.shuffle(randomized)
 
-        start = time()
-        bar = IncrementalBar("Training epoch " + str(epoch), max=numBatches)
-        genLossSum = 0
-        discLossSum = 0
-        lossCount = 0
-        for i in range(batches.shape[0]):
-            genLoss, discLoss = train_batch(batches[randomized[i]])
-            genLossSum += genLoss
-            discLossSum += discLoss
-            lossCount += 1
-            bar.next()
-        end = time()
+            start = time()
+            genLossSum = 0
+            discLossSum = 0
+            lossCount = 0
 
-        print("\nEpoch " + str(epoch) + " took " + str(end - start) + " seconds with a generator loss of " + str(genLossSum/lossCount) + " and a discriminator loss of " + str(discLossSum/lossCount))
+            bar = IncrementalBar("Training epoch " + str(epoch), max=batches.shape[0])
+
+
+            for i in range(batches.shape[0]):
+                batch = tf.constant(batches[randomized[i]], shape=(BATCH_SIZE, IMAGE_WIDTH, IMAGE_HEIGHT, 3))
+                genLoss, discLoss = train_batch(batch)
+                genLossSum += genLoss
+                discLossSum += discLoss
+                lossCount += 1
+                bar.next()
+            if (epoch + 1) % 15 == 0:
+                checkpoint.save(file_prefix = DATA_OUTPUT_PATH + "/checkpoints/")
+            print('\n\nTime for epoch {} is {} sec'.format(epoch + 1, time()-start))
+            print('Loss is {} (generator) and {} (discriminator)\n'.format(genLossSum/lossCount, discLossSum/lossCount))
+
+    train_dataset(batches)
