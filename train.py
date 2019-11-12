@@ -2,7 +2,7 @@ import tensorflow as tf
 import numpy as np
 from time import time
 from model import create_generator, create_discriminator
-from get_data import load_batches
+from get_data import load_batches, load_data
 from constants import *
 from progress.bar import IncrementalBar
 import dask.array as da
