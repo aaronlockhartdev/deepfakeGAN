@@ -62,11 +62,9 @@ def create_generator():
 
     merged = layers.Reshape((25, 25, 1))(merged)
 
-<<<<<<< HEAD
     merged = layers.Conv2DTranspose(512, (5, 5), strides=(2, 2), padding='same', use_bias=True)(merged)
-=======
+
     merged = layers.Conv2DTranspose(128, (5, 5), strides=(2, 2), padding='same', use_bias=True)(merged)
->>>>>>> 5f668f8b6e14624201e07cdb7f0ab307df6e2f4d
 
     merged = layers.Conv2DTranspose(256, (5, 5), strides=(2, 2), padding='same', use_bias=True)(merged)
 
