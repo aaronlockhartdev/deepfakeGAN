@@ -39,7 +39,11 @@ def train():
                                      generator=generator,
                                      discriminator=discriminator)
 
-    batches = load_batches()
+    if BATCH_SIZE == 1:
+        batches = load_data()
+    else:
+        batches = load_batches()
+
 
     print(batches[0].shape)
 
