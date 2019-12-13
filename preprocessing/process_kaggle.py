@@ -20,8 +20,6 @@ class ProcessKaggle():
     def _buildData(self):
         fileName = '/training.csv'
         df = pd.read_csv(self.rawDir + '/' + fileName)
-        images = np.empty((len(df.index), 96, 96))
-        points = np.empty((len(df.index), 30))
 
         data = df.to_numpy()
         print("data shape")
@@ -29,6 +27,11 @@ class ProcessKaggle():
 
         with Pool(processes=self.threadNum) as pool:
             tuple = pool.map(self._dataPoint, data)
+
+        images, points = zip(*tuple)
+        images = np.asarray(images).reshape((len(images), 96, 96, 1))
+        points = np.asarray(points).reshape((len(points), 30))
+
 
         np.save(self.proDir + '/images.npy', images)
         np.save(self.proDir + '/points.npy', points)
