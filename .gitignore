@@ -117,3 +117,4 @@ env
 venv
 *.npy
 *.csv
+*.csv#
