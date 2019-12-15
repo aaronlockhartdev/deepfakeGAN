@@ -11,7 +11,6 @@ class Plot():
         self.file = args.file
         self.path = args.path
         self.smoothing = args.smoothing
-        print(args.smoothing)
 
     def __call__(self):
         with open(self.path + '/' + self.file, 'r', newline='') as file:

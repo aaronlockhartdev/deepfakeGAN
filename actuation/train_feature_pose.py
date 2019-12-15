@@ -25,6 +25,7 @@ class TrainPose():
         from preprocessing.process_kaggle import ProcessKaggle
         # initialize training variables
         self.numEpochs = args.numEpochs
+        self.verbose = args.verbose
 
         # self.optimizer = AdamW(1e-2 * args.lr, learning_rate=args.lr)
         self.optimizer = Adam(args.lr)
@@ -101,12 +102,14 @@ class TrainPose():
             for ind, (input, output) in self.trainData.enumerate():
                 self.loss = self._update(input, output).numpy()
                 self.lossTrainAverage.append(self.loss)
-                self._logTrain(epoch, ind)
+                if self.verbose:
+                    self._logTrain(epoch, ind)
             self.trainData = self.trainData.shuffle(10000)
             for ind, (input, output) in self.valData.enumerate():
                 self.loss = self._validate(input, output).numpy()
                 self.lossValAverage.append(self.loss)
-                self._logVal(epoch, ind)
+                if self.verbose:
+                    self._logVal(epoch, ind)
 
             self.lossTrainAverage = np.average(np.asarray(self.lossTrainAverage))
             self.lossValAverage = np.average(np.asarray(self.lossValAverage))
@@ -131,6 +134,7 @@ if __name__ == '__main__':
     parser.add_argument('--valSize', default=1000, type=int)
     parser.add_argument('--threadNum', default=4, type=int)
     parser.add_argument('--restore', default=True, type=str2bool)
+    parser.add_argument('--verbose', default=True, type=str2bool)
     args = parser.parse_args()
 
     train = TrainPose(args)
