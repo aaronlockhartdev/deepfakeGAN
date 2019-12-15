@@ -14,24 +14,22 @@ class ProcessKaggle():
         self.preFetch = preFetch
         self.valSize = valSize
 
-    def _dataPoint(self, row):
-        return row[:30], np.array([int(item) for item in row[30].split()]).reshape((96, 96))
+    def _split(self, string):
+        return np.array(string.split(), dtype=np.float32).reshape((96, 96, 1))
 
     def _buildData(self):
         fileName = '/training.csv'
         df = pd.read_csv(self.rawDir + '/' + fileName)
+        # df = df.dropna()
 
-        data = df.to_numpy()
-        print("data shape")
-        print(data.shape)
+        points = np.array(df.iloc[:, : 30], dtype=np.float32)
+        images = np.array(df.iloc[:, 30])
 
         with Pool(processes=self.threadNum) as pool:
-            tuple = pool.map(self._dataPoint, data)
+            images = np.array(pool.map(self._split, images))
 
-        images, points = zip(*tuple)
-        images = np.asarray(images).reshape((len(images), 96, 96, 1))
-        points = np.asarray(points).reshape((len(points), 30))
-
+        points = np.nan_to_num(points)
+        images = np.nan_to_num(images)
 
         np.save(self.proDir + '/images.npy', images)
         np.save(self.proDir + '/points.npy', points)

@@ -35,7 +35,7 @@ class FeaturePose(Model):
 
         self.dense1 = Dense(500, activation='relu')
         self.dense2 = Dense(90, activation='relu')
-        self.dense3 = Dense(30, activation='relu')
+        self.dense3 = Dense(30)
 
     def call(self, input, training=False):
 

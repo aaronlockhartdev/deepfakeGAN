@@ -90,7 +90,7 @@ class TrainGAN():
     def _save(self):
         self.managerG.save()
         self.managerR.save()
-        with open('data/checkpoints/gan_losses.csv', 'w', newline='') as file:
+        with open('data/checkpoints/gan_losses.csv', 'a', newline='') as file:
             writer = csv.writer(file)
             writer.writerow([self.genLoss, self.realismLoss])
 
@@ -162,9 +162,16 @@ class TrainGAN():
                 self._logVal(epoch)
 
             print('Epoch {} complete'.format(epoch + 1))
+            self.trainData = self.trainData.shuffle(args.threadNum)
+            self.valData = self.valData.shuffle(args.threadNum)
+
+            self._save()
 
 
 if __name__ == '__main__':
+    def str2bool(v):
+        return v.lower() in ("yes", "true", "t", "1")
+
     parser = argparse.ArgumentParser()
     parser.add_argument('--numEpochs', default=100, type=int)
     parser.add_argument('--lr', default=1e-4, type=float)
@@ -174,7 +181,7 @@ if __name__ == '__main__':
     parser.add_argument('--preFetch', default=1, type=int)
     parser.add_argument('--valSize', default=1000, type=int)
     parser.add_argument('--threadNum', default=4, type=int)
-    parser.add_argument('--restore', default=True, type=bool)
+    parser.add_argument('--restore', default=True, type=str2bool)
     args = parser.parse_args()
 
     train = TrainGAN(args)
