@@ -3,6 +3,7 @@ import tensorflow as tf
 import pandas as pd
 import numpy as np
 from multiprocessing import Pool
+from sklearn.impute import SimpleImputer
 
 
 class ProcessKaggle():
@@ -28,8 +29,9 @@ class ProcessKaggle():
         with Pool(processes=self.threadNum) as pool:
             images = np.array(pool.map(self._split, images))
 
-        points = np.nan_to_num(points)
-        images = np.nan_to_num(images)
+        imputer = SimpleImputer()
+
+        points = imputer.fit_transform(points)
 
         np.save(self.proDir + '/images.npy', images)
         np.save(self.proDir + '/points.npy', points)
